@@ -4,6 +4,9 @@
   "include": [
     "vite.config.*",
     "vitest.config.*",
+    "env.d.ts",
+    "server.mjs",
+    "src/entry-server.ts",
     "cypress.config.*",
     "playwright.config.*",
     "eslint.config.*"
@@ -14,6 +17,9 @@
     "module": "preserve",
     "moduleResolution": "bundler",
     "target": "esnext",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     // Include Node.js types and avoid accidentally including other `@types/*` packages.
     "types": ["node"],

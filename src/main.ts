@@ -1,13 +1,8 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-
-import App from './App.vue'
-import router from './router'
+import { createPortfolioApp } from './app'
 import './style.css'
 
-const app = createApp(App)
+const { app, router } = createPortfolioApp()
 
-app.use(createPinia())
-app.use(router)
-
-app.mount('#app')
+router.isReady().then(() => {
+  app.mount('#app')
+})

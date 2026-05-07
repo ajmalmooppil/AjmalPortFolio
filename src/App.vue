@@ -40,8 +40,8 @@ onUnmounted(() => {
 <style scoped>
 .custom-cursor {
   position: fixed;
-  width: 10px;
-  height: 10px;
+  width: 50px;
+  height: 50px;
   background: var(--accent);
   border-radius: 50%;
   pointer-events: none;

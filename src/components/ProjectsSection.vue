@@ -1,79 +1,120 @@
 <template>
   <section id="work" class="projects-section">
     <div class="wrap">
-
-      <!-- Header row -->
       <div class="proj-header reveal">
         <h2 class="proj-heading font-heading">
-          Explore My Top<br>Creations
+          Explore My Top<br />Creations
           <span class="heading-squiggle">
             <svg viewBox="0 0 60 20" fill="none" width="56" height="18">
-              <path d="M2 14 Q15 4 28 14 Q41 24 54 14" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <path
+                d="M2 14 Q15 4 28 14 Q41 24 54 14"
+                stroke="var(--blue)"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                fill="none"
+              />
             </svg>
           </span>
         </h2>
         <a href="https://github.com/" target="_blank" rel="noopener" class="btn-outline-dark">
-          View All →
+          View All
+          <span class="arrow-icon">
+            <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+              <path
+                d="M1 8L8 1M8 1H2M8 1V7"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </span>
         </a>
       </div>
 
-      <!-- Project rows — alternating layout like reference -->
-      <div class="proj-list">
-        <article
-          v-for="(proj, i) in projects"
-          :key="proj.title"
-          class="proj-row reveal"
-          :style="{ transitionDelay: (i * 0.08) + 's' }"
-          :class="{ 'proj-row--reverse': i % 2 !== 0 }"
-        >
-          <!-- Mockup visual -->
-          <div class="proj-visual">
-            <div class="proj-img" :style="{ background: proj.bg }">
-              <!-- Browser chrome mockup -->
-              <div class="browser-chrome">
-                <div class="browser-bar">
-                  <div class="dots"><span/><span/><span/></div>
-                  <div class="url-pill font-mono">{{ proj.url }}</div>
-                </div>
-                <div class="browser-content" :style="{ background: proj.screenBg }">
-                  <!-- Big text like "OPEN SOURCE DATABASE" in reference -->
-                  <div class="screen-text font-heading">
-                    <div v-for="line in proj.screenLines" :key="line" class="screen-line">{{ line }}</div>
-                  </div>
-                  <div class="screen-glow" :style="{ background: proj.glowColor }"/>
-                </div>
-              </div>
-            </div>
-            <!-- Type label above -->
-            <span class="proj-type font-mono">{{ proj.type }}</span>
-          </div>
-
-          <!-- Text content -->
-          <div class="proj-content">
-            <h3 class="proj-title font-heading">{{ proj.title }}</h3>
-            <p class="proj-desc">{{ proj.desc }}</p>
-            <div class="proj-stack">
-              <span v-for="t in proj.stack" :key="t" class="stack-pill font-mono">{{ t }}</span>
-            </div>
-            <a :href="proj.link" class="proj-arrow-btn" target="_blank" rel="noopener">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                <path d="M2 8h12M9 3l5 5-5 5"/>
+      <div class="project-slider reveal" @mouseenter="pauseAutoSlide" @mouseleave="startAutoSlide" @focusin="pauseAutoSlide" @focusout="startAutoSlide">
+        <div class="slider-top">
+          <p class="slider-count font-mono">{{ activeIndex + 1 }} / {{ projects.length }}</p>
+          <div class="slider-controls">
+            <button type="button" class="slider-btn" aria-label="Previous project" @click="previousProject">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10 3 5 8l5 5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-            </a>
+            </button>
+            <button type="button" class="slider-btn" aria-label="Next project" @click="nextProject">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m6 3 5 5-5 5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
           </div>
-        </article>
-      </div>
+        </div>
 
+        <div class="slider-window">
+          <div class="slider-track" :style="{ transform: `translateX(-${activeIndex * 100}%)` }">
+            <article v-for="proj in projects" :key="proj.title" class="proj-slide">
+              <div class="proj-visual">
+                <div class="proj-img" :style="{ background: proj.bg }">
+                  <div class="browser-chrome">
+                    <div class="browser-bar">
+                      <div class="dots"><span /><span /><span /></div>
+                      <div class="url-pill font-mono">{{ proj.url }}</div>
+                    </div>
+                    <div class="browser-content" :style="{ background: proj.screenBg }">
+                      <div class="screen-text font-heading">
+                        <div v-for="line in proj.screenLines" :key="line" class="screen-line">
+                          {{ line }}
+                        </div>
+                      </div>
+                      <div class="screen-glow" :style="{ background: proj.glowColor }" />
+                    </div>
+                  </div>
+                </div>
+                <span class="proj-type font-mono">{{ proj.type }}</span>
+              </div>
+
+              <div class="proj-content">
+                <p class="proj-kicker font-mono">{{ proj.type }}</p>
+                <h3 class="proj-title font-heading">{{ proj.title }}</h3>
+                <p class="proj-desc">{{ proj.desc }}</p>
+                <div class="proj-stack">
+                  <span v-for="t in proj.stack" :key="t" class="stack-pill font-mono">{{ t }}</span>
+                </div>
+                <a :href="proj.link" class="proj-arrow-btn" target="_blank" rel="noopener" aria-label="Open project">
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M2 8h12M9 3l5 5-5 5" />
+                  </svg>
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="slider-dots" aria-label="Project slides">
+          <button
+            v-for="(proj, index) in projects"
+            :key="proj.title"
+            type="button"
+            class="slider-dot"
+            :class="{ active: activeIndex === index }"
+            :aria-label="`Show project ${index + 1}`"
+            @click="goToProject(index)"
+          />
+        </div>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted, ref } from 'vue'
+
+const activeIndex = ref(0)
+let autoSlideTimer: number | undefined
+
 const projects = [
   {
     title: 'Business ERP\nCore System.',
     type: 'Full-Stack / Dashboard',
-    desc: 'A full-featured ERP platform for a trading company — inventory, invoicing, purchase orders, and real-time analytics across 6 integrated modules.',
+    desc: 'A full-featured ERP platform for a trading company, including inventory, invoicing, purchase orders, and real-time analytics across 6 integrated modules.',
     stack: ['Angular 17', 'Node.js', 'MongoDB', 'Chart.js'],
     bg: 'linear-gradient(145deg, #0a1628 0%, #112240 100%)',
     screenBg: '#091220',
@@ -85,7 +126,7 @@ const projects = [
   {
     title: 'Mobile Application\nDesign.',
     type: 'Application Development',
-    desc: 'A fintech mobile app UI — earn, borrow, trade digital assets securely. Built with a dark-first design language and smooth micro-animations.',
+    desc: 'A fintech mobile app UI for earning, borrowing, and trading digital assets securely with a dark-first design language and smooth micro-animations.',
     stack: ['Angular', 'Ionic', 'Node.js', 'REST API'],
     bg: 'linear-gradient(145deg, #0d0d1a 0%, #1a1a3e 100%)',
     screenBg: '#0a0a18',
@@ -97,7 +138,7 @@ const projects = [
   {
     title: 'Figma to HTML5\n& CSS3 Convert.',
     type: 'Web Development',
-    desc: 'Pixel-perfect Figma-to-code conversion for a no-code startup landing page. The best way to build your startup website — zero compromise on design fidelity.',
+    desc: 'Pixel-perfect Figma-to-code conversion for a no-code startup landing page with careful responsiveness and design fidelity.',
     stack: ['HTML5', 'CSS3', 'Vue 3', 'Tailwind'],
     bg: 'linear-gradient(145deg, #f0f4ff 0%, #dce8ff 100%)',
     screenBg: '#e8f0ff',
@@ -109,7 +150,7 @@ const projects = [
   {
     title: 'HR Management\nSystem.',
     type: 'Business Application',
-    desc: 'An internal HR portal for employee onboarding, attendance tracking, leave management, and payroll overview with role-based access control.',
+    desc: 'An internal HR portal for onboarding, attendance tracking, leave management, and payroll overview with role-based access control.',
     stack: ['Angular', 'Node.js', 'MySQL', 'JWT Auth'],
     bg: 'linear-gradient(145deg, #0a1a0a 0%, #112211 100%)',
     screenBg: '#091509',
@@ -119,6 +160,32 @@ const projects = [
     link: '#',
   },
 ]
+
+function goToProject(index: number) {
+  activeIndex.value = index
+}
+
+function nextProject() {
+  activeIndex.value = (activeIndex.value + 1) % projects.length
+}
+
+function previousProject() {
+  activeIndex.value = (activeIndex.value - 1 + projects.length) % projects.length
+}
+
+function startAutoSlide() {
+  pauseAutoSlide()
+  autoSlideTimer = window.setInterval(nextProject, 4200)
+}
+
+function pauseAutoSlide() {
+  if (!autoSlideTimer) return
+  window.clearInterval(autoSlideTimer)
+  autoSlideTimer = undefined
+}
+
+onMounted(startAutoSlide)
+onUnmounted(pauseAutoSlide)
 </script>
 
 <style scoped>
@@ -128,26 +195,27 @@ const projects = [
   border-top: 1px solid var(--gray-2);
 }
 
-/* Header */
 .proj-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 56px;
+  margin-bottom: 42px;
   flex-wrap: wrap;
 }
+
 .proj-heading {
-  font-size: clamp(30px, 4vw, 50px);
-  font-weight: 800;
-  letter-spacing: -.035em;
-  line-height: 1.1;
-  color: var(--black);
   display: flex;
   align-items: flex-end;
   gap: 10px;
   flex-wrap: wrap;
+  color: var(--black);
+  font-size: clamp(30px, 4vw, 50px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
 }
+
 .heading-squiggle {
   display: inline-block;
   margin-left: 4px;
@@ -155,180 +223,327 @@ const projects = [
   vertical-align: bottom;
 }
 
-/* Project list */
-.proj-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-/* Each row */
-.proj-row {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 0;
-  border: 1px solid var(--gray-2);
-  border-radius: var(--radius-lg);
+.project-slider {
   overflow: hidden;
-  margin-bottom: 20px;
-  transition: box-shadow .3s ease;
-}
-.proj-row:hover { box-shadow: 0 16px 56px rgba(0,0,0,.1); }
-.proj-row--reverse { grid-template-columns: 0.9fr 1.1fr; }
-.proj-row--reverse .proj-visual { order: 2; }
-.proj-row--reverse .proj-content { order: 1; }
-
-@media (max-width: 768px) {
-  .proj-row,
-  .proj-row--reverse { grid-template-columns: 1fr; }
-  .proj-row--reverse .proj-visual,
-  .proj-row--reverse .proj-content { order: unset; }
 }
 
-/* Visual side */
+.slider-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.slider-count {
+  color: var(--gray-3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.slider-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.slider-btn {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border: 1px solid var(--gray-2);
+  border-radius: 50%;
+  color: var(--black);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.2s;
+}
+
+.slider-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.slider-btn:hover {
+  background: var(--black);
+  border-color: var(--black);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.slider-window {
+  overflow: hidden;
+  border: 1px solid var(--gray-2);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 18px 58px rgba(0, 0, 0, 0.08);
+}
+
+.slider-track {
+  display: flex;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.proj-slide {
+  min-width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  background: var(--white);
+}
+
 .proj-visual {
   position: relative;
-  min-height: 280px;
+  min-height: 430px;
 }
+
 .proj-type {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  font-size: 9.5px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,.55);
+  top: 18px;
+  left: 18px;
   z-index: 2;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
-.proj-row--reverse .proj-type { color: var(--gray-3); }
-/* flip light type for light bg projects */
+
 .proj-img {
-  width: 100%; height: 100%;
-  min-height: 280px;
+  width: 100%;
+  height: 100%;
+  min-height: 430px;
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 24px 24px;
+  padding: 42px 30px 30px;
 }
 
-/* Browser mockup inside card */
 .browser-chrome {
-  width: 100%;
-  max-width: 360px;
+  width: min(100%, 460px);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.42);
+  transform: rotate(-1.5deg);
 }
+
 .browser-bar {
-  background: rgba(0,0,0,.5);
-  backdrop-filter: blur(8px);
-  padding: 8px 12px;
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 9px 12px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
 }
-.dots { display: flex; gap: 5px; }
+
+.dots {
+  display: flex;
+  gap: 5px;
+}
+
 .dots span {
-  width: 8px; height: 8px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: rgba(255,255,255,.25);
+  background: rgba(255, 255, 255, 0.25);
 }
-.dots span:nth-child(1) { background: #FF5F57; }
-.dots span:nth-child(2) { background: #FEBC2E; }
-.dots span:nth-child(3) { background: #28C840; }
+
+.dots span:nth-child(1) { background: #ff5f57; }
+.dots span:nth-child(2) { background: #febc2e; }
+.dots span:nth-child(3) { background: #28c840; }
+
 .url-pill {
   flex: 1;
-  background: rgba(255,255,255,.1);
-  border-radius: 4px;
   height: 18px;
   padding: 0 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.46);
   font-size: 9px;
-  color: rgba(255,255,255,.4);
   line-height: 18px;
-  white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
 .browser-content {
+  min-height: 190px;
   position: relative;
-  padding: 20px 18px 16px;
-  min-height: 140px;
   overflow: hidden;
+  padding: 26px 22px 22px;
 }
+
 .screen-text {
   position: relative;
   z-index: 1;
 }
+
 .screen-line {
-  font-size: clamp(20px, 3.5vw, 32px);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(28px, 4vw, 46px);
   font-weight: 800;
-  letter-spacing: -.03em;
-  line-height: 1.1;
-  color: rgba(255,255,255,.9);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   white-space: nowrap;
 }
-/* Light background project — dark text */
-.proj-row:nth-child(3) .screen-line { color: rgba(0,0,0,.8); }
+
+.proj-slide:nth-child(3) .proj-type {
+  color: rgba(10, 10, 10, 0.45);
+}
+
+.proj-slide:nth-child(3) .screen-line {
+  color: rgba(0, 0, 0, 0.8);
+}
 
 .screen-glow {
   position: absolute;
-  bottom: -40px;
   right: -40px;
-  width: 160px; height: 160px;
+  bottom: -40px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
   filter: blur(50px);
   pointer-events: none;
 }
 
-/* Content side */
 .proj-content {
-  padding: 36px 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 0;
+  padding: 44px 38px;
   background: var(--white);
 }
+
+.proj-kicker {
+  margin-bottom: 12px;
+  color: var(--gray-3);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
 .proj-title {
-  font-size: clamp(22px, 2.8vw, 34px);
-  font-weight: 800;
-  letter-spacing: -.03em;
-  line-height: 1.15;
-  color: var(--black);
   margin-bottom: 14px;
+  color: var(--black);
+  font-size: clamp(26px, 3vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
   white-space: pre-line;
 }
+
 .proj-desc {
-  font-size: 14px;
-  line-height: 1.75;
+  margin-bottom: 22px;
   color: var(--gray-4);
+  font-size: 14px;
   font-weight: 300;
-  margin-bottom: 20px;
+  line-height: 1.75;
 }
+
 .proj-stack {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
 }
+
 .stack-pill {
-  padding: 3px 10px;
+  padding: 4px 10px;
   background: var(--gray-1);
   border: 1px solid var(--gray-2);
   border-radius: 6px;
-  font-size: 10.5px;
   color: var(--gray-4);
+  font-size: 10.5px;
 }
+
 .proj-arrow-btn {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: var(--black);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  transition: transform .22s, background .22s;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  background: var(--black);
+  border-radius: 50%;
+  color: #fff;
+  transition:
+    background 0.22s,
+    transform 0.22s;
 }
-.proj-arrow-btn:hover { background: var(--blue); transform: rotate(45deg); }
+
+.proj-arrow-btn:hover {
+  background: var(--blue);
+  transform: rotate(45deg);
+}
+
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--gray-2);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    width 0.2s;
+}
+
+.slider-dot.active {
+  width: 28px;
+  background: var(--blue);
+}
+
+@media (max-width: 820px) {
+  .proj-slide {
+    grid-template-columns: 1fr;
+  }
+
+  .proj-visual,
+  .proj-img {
+    min-height: 310px;
+  }
+
+  .proj-content {
+    padding: 30px 22px;
+  }
+}
+
+@media (max-width: 560px) {
+  .projects-section {
+    padding: 68px 0 76px;
+  }
+
+  .slider-top {
+    align-items: flex-end;
+  }
+
+  .slider-window {
+    border-radius: 8px;
+  }
+
+  .proj-visual,
+  .proj-img {
+    min-height: 260px;
+  }
+
+  .browser-content {
+    min-height: 150px;
+  }
+}
 </style>

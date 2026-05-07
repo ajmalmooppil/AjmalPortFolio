@@ -29,10 +29,19 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit -- --run
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
       - name: Build project
         run: npm run build
+
+      - name: Run E2E tests
+        run: npm run test:e2e
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

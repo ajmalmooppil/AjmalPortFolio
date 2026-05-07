@@ -21,9 +21,9 @@
 
       <!-- Center Nav -->
       <nav class="nav-links">
-        <a href="#" class="nav-link" :class="{ active: active === 'home' }">Home</a>
-        <a href="#work" class="nav-link" :class="{ active: active === 'work' }">Work</a>
+        <a href="#hero" class="nav-link" :class="{ active: active === 'home' }">Home</a>
         <a href="#about" class="nav-link" :class="{ active: active === 'about' }">About</a>
+        <a href="#work" class="nav-link" :class="{ active: active === 'work' }">Work</a>
         <a href="#contact" class="nav-link" :class="{ active: active === 'contact' }">Contact</a>
       </nav>
 
@@ -40,9 +40,9 @@
 
     <!-- Mobile menu -->
     <div class="mobile-nav" :class="{ open: menuOpen }">
-      <a href="#" @click="menuOpen = false" class="mobile-link font-heading">Home</a>
-      <a href="#work" @click="menuOpen = false" class="mobile-link font-heading">Work</a>
+      <a href="#hero" @click="menuOpen = false" class="mobile-link font-heading">Home</a>
       <a href="#about" @click="menuOpen = false" class="mobile-link font-heading">About</a>
+      <a href="#work" @click="menuOpen = false" class="mobile-link font-heading">Work</a>
       <a href="#contact" @click="menuOpen = false" class="mobile-link font-heading">Contact</a>
       <a
         href="#contact"
@@ -61,11 +61,31 @@ import { ref, onMounted, onUnmounted } from 'vue'
 const scrolled = ref(false)
 const menuOpen = ref(false)
 const active = ref('home')
+const navSections = [
+  { id: 'hero', nav: 'home' },
+  { id: 'about', nav: 'about' },
+  { id: 'work', nav: 'work' },
+  { id: 'contact', nav: 'contact' },
+]
 
 function onScroll() {
   scrolled.value = window.scrollY > 30
+
+  let current = 'home'
+  const activationPoint = window.scrollY + window.innerHeight * 0.35
+
+  for (const { id, nav } of navSections) {
+    const section = document.getElementById(id)
+    if (section && section.offsetTop <= activationPoint) current = nav
+  }
+
+  active.value = current
 }
-onMounted(() => window.addEventListener('scroll', onScroll))
+
+onMounted(() => {
+  onScroll()
+  window.addEventListener('scroll', onScroll)
+})
 onUnmounted(() => window.removeEventListener('scroll', onScroll))
 </script>
 
