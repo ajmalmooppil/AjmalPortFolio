@@ -7,14 +7,14 @@ import HomeView from '@/views/HomeView.vue'
 import { render } from '@/entry-server'
 
 class MockIntersectionObserver {
-  observe = vi.fn()
-  unobserve = vi.fn()
-  disconnect = vi.fn()
+  observe = vi.fn<() => void>()
+  unobserve = vi.fn<() => void>()
+  disconnect = vi.fn<() => void>()
 }
 
 beforeEach(() => {
   vi.stubGlobal('IntersectionObserver', MockIntersectionObserver)
-  vi.stubGlobal('scrollTo', vi.fn())
+  vi.stubGlobal('scrollTo', vi.fn<() => void>())
 })
 
 afterEach(() => {
@@ -56,12 +56,13 @@ describe('ProjectsSection', () => {
     vi.useFakeTimers()
     const wrapper = mount(ProjectsSection)
 
-    expect(wrapper.get('.slider-count').text()).toBe('1 / 4')
+    expect(wrapper.get('.slider-count').text()).toBe('1 / 3')
 
     await wrapper.get('[aria-label="Next project"]').trigger('click')
 
-    expect(wrapper.get('.slider-count').text()).toBe('2 / 4')
-    expect(wrapper.text()).toContain('Mobile Application')
+    expect(wrapper.get('.slider-count').text()).toBe('2 / 3')
+    expect(wrapper.get('.slider-track').attributes('style')).toContain('translateX(-100%)')
+    expect(wrapper.text()).toContain('Archana Temple')
 
     wrapper.unmount()
   })

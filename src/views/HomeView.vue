@@ -37,6 +37,7 @@ import ProjectsSection from '@/components/ProjectsSection.vue'
 import TestimonialsSection from '@/components/TestimonialsSection.vue'
 import ContactSection from '@/components/ContactSection.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
+import { applyHomeSeo } from '@/seo'
 
 // Import the reveal composable — this initialises the
 // Intersection Observer that drives all CSS scroll animations
@@ -44,6 +45,7 @@ import { useReveal} from '@/composables/useReveal'
 
 
 useReveal()
+if (!import.meta.env.SSR) applyHomeSeo()
 const showBtt = ref(false)
 function onScroll() { showBtt.value = window.scrollY > 400 }
 function scrollTop() { window.scrollTo({ top: 0, behavior: 'smooth' }) }

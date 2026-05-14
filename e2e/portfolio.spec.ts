@@ -41,9 +41,9 @@ test('lets visitors interact with the contact form', async ({ page }) => {
 test('moves through featured project slides', async ({ page }) => {
   await page.goto(appUrl, { waitUntil: 'domcontentloaded' })
 
-  await expect(page.locator('.slider-count')).toHaveText('1 / 4')
+  await expect(page.locator('.slider-count')).toHaveText('1 / 3')
   await page.getByRole('button', { name: 'Next project' }).click()
 
-  await expect(page.locator('.slider-count')).toHaveText('2 / 4')
-  await expect(page.getByRole('heading', { name: /Mobile Application/i })).toBeVisible()
+  await expect(page.locator('.slider-count')).toHaveText('2 / 3')
+  await expect(page.getByRole('heading', { name: /Archana Temple/i })).toBeVisible()
 })
