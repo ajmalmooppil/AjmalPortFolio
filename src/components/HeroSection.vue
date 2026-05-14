@@ -61,7 +61,7 @@
           <h2 class="about-name font-heading">Ajmal Sadiqe</h2>
           <p class="about-bio">
             I'm a <span class="link-ul">freelance developer</span> with over
-            <span class="link-ul">1 year 9 months of experience</span>, based in Kerala, the heart
+            <span class="link-ul">2 years of experience</span>, based in Kerala, the heart
             of South India.
           </p>
           <!-- Social icons row -->
@@ -128,7 +128,7 @@ const socials = [
 ]
 
 const stats = [
-  { value: '1.9y+', label: 'Experience' },
+  { value: '2y+', label: 'Experience' },
   { value: '10+', label: 'Projects Built' },
   { value: '100%', label: 'Client Satisfaction' },
 ]

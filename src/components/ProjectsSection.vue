@@ -49,56 +49,110 @@
         </div>
 
         <div class="slider-window">
-          <div class="slider-track" :style="{ transform: `translateX(-${activeIndex * 100}%)` }">
-            <article v-for="proj in projects" :key="proj.title" class="proj-slide">
-              <div class="proj-visual">
-                <div class="proj-img" :style="{ background: proj.bg }">
-                  <div class="browser-chrome">
-                    <div class="browser-bar">
-                      <div class="dots"><span /><span /><span /></div>
-                      <div class="url-pill font-mono">{{ proj.url }}</div>
-                    </div>
-                    <div class="browser-content" :style="{ background: proj.screenBg }">
-                      <div class="screen-text font-heading">
-                        <div v-for="line in proj.screenLines" :key="line" class="screen-line">
-                          {{ line }}
-                        </div>
-                      </div>
-                      <div class="screen-glow" :style="{ background: proj.glowColor }" />
-                    </div>
-                  </div>
-                </div>
-                <span class="proj-type font-mono">{{ proj.type }}</span>
+  <div
+    class="slider-track"
+    :style="{ transform: `translateX(-${activeIndex * 100}%)` }"
+  >
+    <article
+      v-for="proj in projects"
+      :key="proj.title"
+      class="proj-slide"
+    >
+      <div class="proj-visual">
+
+        <div class="proj-img" :style="{ background: proj.bg }">
+
+          <div class="browser-chrome">
+            <div class="browser-bar">
+              <div class="dots">
+                <span />
+                <span />
+                <span />
               </div>
 
-              <div class="proj-content">
-                <p class="proj-kicker font-mono">{{ proj.type }}</p>
-                <h3 class="proj-title font-heading">{{ proj.title }}</h3>
-                <p class="proj-desc">{{ proj.desc }}</p>
-                <div class="proj-stack">
-                  <span v-for="t in proj.stack" :key="t" class="stack-pill font-mono">{{ t }}</span>
-                </div>
-                <a :href="proj.link" class="proj-arrow-btn" target="_blank" rel="noopener" aria-label="Open project">
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                    <path d="M2 8h12M9 3l5 5-5 5" />
-                  </svg>
-                </a>
+              <div class="url-pill font-mono">
+                {{ proj.url }}
               </div>
-            </article>
+            </div>
+
+            <!-- REAL IMAGE -->
+            <div class="browser-content">
+              <img
+                :src="proj.image"
+                :alt="proj.title"
+                class="project-image"
+              />
+
+              <div
+                class="screen-glow"
+                :style="{ background: proj.glowColor }"
+              />
+            </div>
           </div>
         </div>
 
-        <div class="slider-dots" aria-label="Project slides">
-          <button
-            v-for="(proj, index) in projects"
-            :key="proj.title"
-            type="button"
-            class="slider-dot"
-            :class="{ active: activeIndex === index }"
-            :aria-label="`Show project ${index + 1}`"
-            @click="goToProject(index)"
-          />
+        <span class="proj-type font-mono">
+          {{ proj.type }}
+        </span>
+      </div>
+
+      <div class="proj-content">
+        <p class="proj-kicker font-mono">
+          {{ proj.type }}
+        </p>
+
+        <h3 class="proj-title font-heading">
+          {{ proj.title }}
+        </h3>
+
+        <p class="proj-desc">
+          {{ proj.desc }}
+        </p>
+
+        <div class="proj-stack">
+          <span
+            v-for="t in proj.stack"
+            :key="t"
+            class="stack-pill font-mono"
+          >
+            {{ t }}
+          </span>
         </div>
+
+        <a
+          :href="proj.link"
+          class="proj-arrow-btn"
+          target="_blank"
+          rel="noopener"
+          aria-label="Open project"
+        >
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="16"
+            height="16"
+          >
+            <path d="M2 8h12M9 3l5 5-5 5" />
+          </svg>
+        </a>
+      </div>
+    </article>
+  </div>
+</div>
+
+<div class="slider-dots" aria-label="Project slides">
+  <button
+    v-for="(proj, index) in projects"
+    :key="proj.title"
+    type="button"
+    class="slider-dot"
+    :class="{ active: activeIndex === index }"
+    :aria-label="`Show project ${index + 1}`"
+    @click="goToProject(index)"
+  />
+</div>
       </div>
     </div>
   </section>
@@ -106,6 +160,10 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
+import Dashboard1 from '@/assets/images/Dashboard1.jpeg'
+import Archana from '@/assets/images/Archana.png'
+// import Possix360 from '@/assets/images/Possix360.jpeg'
+import HisabMasjid from '@/assets/images/hisabalmasjid.jpeg'
 
 const activeIndex = ref(0)
 let autoSlideTimer: number | undefined
@@ -115,48 +173,47 @@ const projects = [
     title: 'Business ERP\nCore System.',
     type: 'Full-Stack / Dashboard',
     desc: 'A full-featured ERP platform for a trading company, including inventory, invoicing, purchase orders, and real-time analytics across 6 integrated modules.',
-    stack: ['Angular 17', 'Node.js', 'MongoDB', 'Chart.js'],
+    stack: ['Vue.js', 'Chart.js', 'PrimeIcons'],
     bg: 'linear-gradient(145deg, #0a1628 0%, #112240 100%)',
-    screenBg: '#091220',
+    image: Dashboard1,
     glowColor: 'rgba(26,86,255,0.4)',
-    screenLines: ['OPEN', 'SOURCE', 'SYSTEM'],
     url: 'erp.ajmal.dev',
     link: '#',
   },
+
   {
-    title: 'Mobile Application\nDesign.',
-    type: 'Application Development',
-    desc: 'A fintech mobile app UI for earning, borrowing, and trading digital assets securely with a dark-first design language and smooth micro-animations.',
-    stack: ['Angular', 'Ionic', 'Node.js', 'REST API'],
-    bg: 'linear-gradient(145deg, #0d0d1a 0%, #1a1a3e 100%)',
-    screenBg: '#0a0a18',
-    glowColor: 'rgba(124,58,237,0.5)',
-    screenLines: ['EARN,', 'BORROW,', 'TRADE'],
-    url: 'app.fintech.io',
+    title: 'Archana Temple\nManagement Platform.',
+    type: 'Religious Management System',
+    desc: 'A complete temple management solution for handling poojas, offerings, bookings, donations, event scheduling, devotee records, and financial reporting with secure admin access.',
+    stack: ['Angular', 'Node.js', 'MongoDB', '.net'],
+    bg: 'linear-gradient(145deg, #2a1200 0%, #4a1f00 100%)',
+    image: Archana,
+    glowColor: 'rgba(255,140,0,0.35)',
+    url: 'archana.temple.app',
     link: '#',
   },
-  {
-    title: 'Figma to HTML5\n& CSS3 Convert.',
-    type: 'Web Development',
-    desc: 'Pixel-perfect Figma-to-code conversion for a no-code startup landing page with careful responsiveness and design fidelity.',
-    stack: ['HTML5', 'CSS3', 'Vue 3', 'Tailwind'],
-    bg: 'linear-gradient(145deg, #f0f4ff 0%, #dce8ff 100%)',
-    screenBg: '#e8f0ff',
-    glowColor: 'rgba(26,86,255,0.15)',
-    screenLines: ['THE BEST', 'WAY TO', 'BUILD'],
-    url: 'startup.landing.dev',
+
+ /* {
+    title: 'POSSIX360\nBusiness Platform.',
+    type: 'POS & Inventory System',
+    desc: 'An advanced POS and inventory management platform featuring billing, stock tracking, sales analytics, customer management, invoice generation, and multi-branch support.',
+    stack: ['Vue.js', 'Node.js', 'MySQL', 'REST API'],
+    bg: 'linear-gradient(145deg, #001220 0%, #003049 100%)',
+    image: Possix360,
+    glowColor: 'rgba(0,180,255,0.35)',
+    url: 'possix360.com',
     link: '#',
-  },
+  },*/
+
   {
-    title: 'HR Management\nSystem.',
-    type: 'Business Application',
-    desc: 'An internal HR portal for onboarding, attendance tracking, leave management, and payroll overview with role-based access control.',
-    stack: ['Angular', 'Node.js', 'MySQL', 'JWT Auth'],
-    bg: 'linear-gradient(145deg, #0a1a0a 0%, #112211 100%)',
-    screenBg: '#091509',
-    glowColor: 'rgba(34,197,94,0.4)',
-    screenLines: ['MANAGE', 'YOUR', 'TEAM'],
-    url: 'hr.company.io',
+    title: 'HISAB AL MASJID\nManagement Platform.',
+    type: 'Masjid Administration System',
+    desc: 'A comprehensive masjid management platform for handling donations, prayer schedules, announcements, expense tracking, committee management, and financial transparency.',
+    stack: ['Angular', ' NestJS', 'PostgreSQL', 'JWT Auth'],
+    bg: 'linear-gradient(145deg, #001a12 0%, #003322 100%)',
+    image: HisabMasjid,
+    glowColor: 'rgba(34,197,94,0.35)',
+    url: 'hissabalmasjid.app',
     link: '#',
   },
 ]
