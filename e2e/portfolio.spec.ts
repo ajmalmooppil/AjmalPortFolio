@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-const appUrl = '/AjmalPortFolio/'
+const appUrl = '/dev.ajmal/'
 
 test('renders the portfolio home page', async ({ page }) => {
   await page.goto(appUrl, { waitUntil: 'domcontentloaded' })
