@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <form class="contact-form reveal" style="transition-delay: 0.1s" method="POST" @submit.prevent="handleSubmit" netlify>
+      <form class="contact-form reveal" style="transition-delay: 0.1s" name="contactForm" method="POST" netlify>
         <div class="form-row">
           <label class="modern-field">
             <span class="field-label">Name</span>
