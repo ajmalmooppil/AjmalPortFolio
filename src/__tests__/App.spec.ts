@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 
 import ContactSection from '@/components/ContactSection.vue'
 import ProjectsSection from '@/components/ProjectsSection.vue'
@@ -48,6 +48,25 @@ describe('ContactSection', () => {
 
     expect(wrapper.get('.select-trigger').text()).toContain('Backend API')
     expect(wrapper.find('[role="listbox"]').exists()).toBe(false)
+  })
+
+  it('shows a success modal and resets fields after a successful submit', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true }))
+    const wrapper = mount(ContactSection)
+
+    await wrapper.get('input[name="name"]').setValue('Ajmal')
+    await wrapper.get('input[name="email"]').setValue('ajmal@example.com')
+    await wrapper.get('input[name="phone"]').setValue('+91 98765 43210')
+    await wrapper.get('textarea[name="message"]').setValue('I need help with a dashboard.')
+
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+
+    expect(wrapper.get('[role="dialog"]').text()).toContain('Message sent')
+    expect((wrapper.get('input[name="name"]').element as HTMLInputElement).value).toBe('')
+    expect((wrapper.get('input[name="email"]').element as HTMLInputElement).value).toBe('')
+    expect((wrapper.get('input[name="phone"]').element as HTMLInputElement).value).toBe('')
+    expect((wrapper.get('textarea[name="message"]').element as HTMLTextAreaElement).value).toBe('')
   })
 })
 

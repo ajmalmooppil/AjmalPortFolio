@@ -70,7 +70,7 @@
                   stroke-linecap="round"
                 />
               </svg>
-              <input type="text" name="name" placeholder="Your name" required />
+              <input v-model="form.name" type="text" name="name" placeholder="Your name" required />
             </span>
           </label>
           <label class="modern-field">
@@ -91,7 +91,7 @@
                   stroke-linejoin="round"
                 />
               </svg>
-              <input type="email" name="email" placeholder="you@example.com" required />
+              <input v-model="form.email" type="email" name="email" placeholder="you@example.com" required />
             </span>
           </label>
         </div>
@@ -108,7 +108,7 @@
                 stroke-linejoin="round"
               />
             </svg>
-            <input type="tel" name="phone" placeholder="+91 98765 43210" />
+            <input v-model="form.phone" type="tel" name="phone" placeholder="+91 98765 43210" />
           </span>
         </label>
 
@@ -191,6 +191,7 @@
               <path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
             </svg>
             <textarea
+              v-model="form.message"
               name="message"
               rows="6"
               placeholder="Share a few details about your project"
@@ -199,8 +200,10 @@
           </span>
         </label>
 
-        <button class="btn-blue submit-btn" type="submit">
-          Send Message
+        <p v-if="errorMessage" class="form-error" role="alert">{{ errorMessage }}</p>
+
+        <button class="btn-blue submit-btn" type="submit" :disabled="loading">
+          {{ loading ? 'Sending...' : 'Send Message' }}
           <span class="arrow-icon">
             <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
               <path
@@ -213,6 +216,52 @@
           </span>
         </button>
       </form>
+    </div>
+
+    <div
+      v-if="successModalOpen"
+      class="success-modal-backdrop"
+      role="presentation"
+      @click.self="closeSuccessModal"
+    >
+      <div
+        class="success-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="success-modal-title"
+      >
+        <button
+          type="button"
+          class="success-modal-close"
+          aria-label="Close success message"
+          @click="closeSuccessModal"
+        >
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path
+              d="M5 5L15 15M15 5L5 15"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <span class="success-modal-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path
+              d="M5 12.5L9.3 16.5L19 7"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </span>
+        <h3 id="success-modal-title" class="font-heading">Message sent</h3>
+        <p>{{ successMessage }}</p>
+        <button type="button" class="btn-blue success-modal-action" @click="closeSuccessModal">
+          Great
+        </button>
+      </div>
     </div>
   </section>
 </template>
@@ -235,6 +284,7 @@ const form = reactive(initialForm());
 const loading = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('')
+const successModalOpen = ref(false)
 
 const selectOpen = ref(false)
 const defaultProjectType = { label: 'Website', description: 'Portfolio, landing page, or business site' }
@@ -302,7 +352,8 @@ async function handleSubmit(event: Event) {
       throw new Error(`Form submission failed: ${response.status}`)
     }
 
-    successMessage.value = 'Message sent successfully!'
+    successMessage.value = 'Thanks, your message was sent successfully. I will get back to you soon.'
+    successModalOpen.value = true
 
     Object.assign(form, initialForm())
     selectOpen.value = false
@@ -319,6 +370,10 @@ async function handleSubmit(event: Event) {
 function chooseType(type: string) {
   form.projectType = type
   selectOpen.value = false
+}
+
+function closeSuccessModal() {
+  successModalOpen.value = false
 }
 </script>
 
@@ -678,6 +733,114 @@ textarea::placeholder {
   width: 100%;
   justify-content: center;
   margin-top: 4px;
+}
+
+.submit-btn:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+.form-error {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(214, 54, 54, 0.22);
+  border-radius: 8px;
+  background: rgba(214, 54, 54, 0.08);
+  color: #b42318;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.success-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(16, 17, 20, 0.46);
+  backdrop-filter: blur(8px);
+}
+
+.success-modal {
+  position: relative;
+  width: min(100%, 420px);
+  padding: 34px 28px 28px;
+  border: 1px solid var(--gray-2);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.success-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--gray-2);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--gray-4);
+  cursor: pointer;
+  transition:
+    border-color 0.18s,
+    color 0.18s,
+    transform 0.18s;
+}
+
+.success-modal-close:hover {
+  border-color: var(--black);
+  color: var(--black);
+  transform: translateY(-1px);
+}
+
+.success-modal-close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.success-modal-icon {
+  width: 62px;
+  height: 62px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(26, 86, 255, 0.1);
+  color: var(--blue);
+}
+
+.success-modal-icon svg {
+  width: 34px;
+  height: 34px;
+}
+
+.success-modal h3 {
+  margin-top: 18px;
+  color: var(--black);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.success-modal p {
+  margin: 10px auto 0;
+  max-width: 310px;
+  color: var(--gray-4);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.success-modal-action {
+  width: 100%;
+  justify-content: center;
+  margin-top: 24px;
 }
 
 @media (max-width: 900px) {
