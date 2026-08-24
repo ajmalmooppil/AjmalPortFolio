@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <form class="contact-form reveal" style="transition-delay: 0.1s" name="contactForm" method="POST" netlify>
+      <form class="contact-form reveal" style="transition-delay: 0.1s" name="contact" method="POST" @submit.prevent="handleSubmit" netlify>
         <div class="form-row">
           <label class="modern-field">
             <span class="field-label">Name</span>
@@ -270,27 +270,40 @@ const socials = [
   },
 ]
 
-async function handleSubmit() {
+async function handleSubmit(event: Event) {
   loading.value = true
   successMessage.value = ''
   errorMessage.value = ''
 
   try {
-    const response = await fetch(`${ import.meta.env.VITE_APP_API_URL }/api/contact`, {
+    const formElement = event.target as HTMLFormElement
+    const formData = new FormData(formElement)
+
+    formData.set('form-name', 'contact')
+
+    const response = await fetch('/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(
+        Array.from(formData.entries()).map(([key, value]) => [key, String(value)]),
+      ).toString(),
     })
-    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || 'Something went wrong while sending the message.');
+      throw new Error(`Form submission failed: ${response.status}`)
     }
 
     successMessage.value = 'Message sent successfully!'
+
     Object.assign(form, initialForm())
-  } catch (err) {
-    errorMessage.value = err instanceof Error ? err.message : 'An error occurred while sending the message. Please try again later.'
+    selectOpen.value = false
+  } catch (error) {
+    console.error('Contact form error:', error)
+
+    errorMessage.value =
+      'Something went wrong while sending your message. Please try again.'
   } finally {
     loading.value = false
   }
