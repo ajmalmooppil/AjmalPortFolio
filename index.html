@@ -136,6 +136,18 @@
       }
     </script>
   </head>
+  <form
+  name="contact"
+  method="POST"
+  data-netlify="true"
+  hidden
+>
+  <input type="text" name="name" />
+  <input type="email" name="email" />
+  <input type="tel" name="phone" />
+  <input type="text" name="projectType" />
+  <textarea name="message"></textarea>
+</form>
   <body>
     <div id="app"><!--app-html--></div>
     <script type="module" src="/src/entry-client.ts"></script>

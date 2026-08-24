@@ -50,7 +50,14 @@
         </div>
       </div>
 
-      <form class="contact-form reveal" style="transition-delay: 0.1s" name="contact" method="POST" @submit.prevent="handleSubmit" netlify>
+      <form class="contact-form reveal" style="transition-delay: 0.1s" name="contact" method="POST" @submit.prevent="handleSubmit" data-netlify="true"
+  data-netlify-honeypot="bot-field"
+  >
+<input type="hidden" name="form-name" value="contact" />
+
+  <div hidden>
+    <input name="bot-field" />
+  </div>
         <div class="form-row">
           <label class="modern-field">
             <span class="field-label">Name</span>
