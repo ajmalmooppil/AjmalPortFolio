@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <form class="contact-form reveal" style="transition-delay: 0.1s" @submit.prevent="sendMessage">
+      <form class="contact-form reveal" style="transition-delay: 0.1s" method="POST" @submit.prevent="handleSubmit" netlify>
         <div class="form-row">
           <label class="modern-field">
             <span class="field-label">Name</span>
@@ -63,7 +63,7 @@
                   stroke-linecap="round"
                 />
               </svg>
-              <input v-model="form.name" type="text" name="name" placeholder="Your name" required />
+              <input type="text" name="name" placeholder="Your name" required />
             </span>
           </label>
           <label class="modern-field">
@@ -84,7 +84,7 @@
                   stroke-linejoin="round"
                 />
               </svg>
-              <input v-model="form.email" type="email" name="email" placeholder="you@example.com" required />
+              <input type="email" name="email" placeholder="you@example.com" required />
             </span>
           </label>
         </div>
@@ -101,7 +101,7 @@
                 stroke-linejoin="round"
               />
             </svg>
-            <input v-model="form.phone" type="tel" name="phone" placeholder="+91 98765 43210" />
+            <input type="tel" name="phone" placeholder="+91 98765 43210" />
           </span>
         </label>
 
@@ -137,9 +137,9 @@
                 :key="type.label"
                 type="button"
                 class="select-option"
-                :class="{ selected: form.type === type.label }"
+                :class="{ selected: form.projectType === type.label }"
                 role="option"
-                :aria-selected="form.type === type.label"
+                :aria-selected="form.projectType === type.label"
                 @click="chooseType(type.label)"
               >
                 <span>
@@ -147,7 +147,7 @@
                   <small>{{ type.description }}</small>
                 </span>
                 <svg
-                  v-if="form.type === type.label"
+                  v-if="form.projectType === type.label"
                   class="select-check"
                   viewBox="0 0 16 16"
                   fill="none"
@@ -164,6 +164,11 @@
               </button>
             </div>
           </div>
+          <input
+    type="hidden"
+    name="projectType"
+    :value="form.projectType"
+  />
         </div>
 
         <label class="modern-field">
@@ -179,7 +184,6 @@
               <path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
             </svg>
             <textarea
-              v-model="form.message"
               name="message"
               rows="6"
               placeholder="Share a few details about your project"
@@ -209,15 +213,21 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 
-const emailAddress = 'ajmalsadiqe@example.com'
 
-const form = reactive({
+const emailAddress = 'dev.ajmalsadiqe@gmail.com'
+
+const initialForm = () => ({
   name: '',
   email: '',
   phone: '',
-  type: 'Website',
+  projectType: 'Website',
   message: '',
 })
+
+const form = reactive(initialForm());
+const loading = ref(false);
+const successMessage = ref('');
+const errorMessage = ref('')
 
 const selectOpen = ref(false)
 const defaultProjectType = { label: 'Website', description: 'Portfolio, landing page, or business site' }
@@ -230,28 +240,22 @@ const projectTypes = [
 ]
 
 const selectedType = computed(
-  () => projectTypes.find((type) => type.label === form.type) ?? defaultProjectType,
+  () => projectTypes.find((type) => type.label === form.projectType) ?? defaultProjectType,
 )
 
 const socials = [
   {
     label: 'GitHub',
-    href: 'https://github.com/',
-    icon: `<svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3z"/></svg>`,
+    href: 'https://github.com/ajmalmoopil366',
+    icon: `<svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1。2.6 １。７。２ ２。９。１ ３。２。８。８ １。２ １。９ １。２ ３。２ ０ ４。６－２。８ ５。６－５。５ ５。９。４。４。８ １。１。８ ２。２v３。３c０ 。３。２ 。７。８ 。６A１２ １２ ０ ０ ０ １２ 。３z"/></svg>`,
   },
   {
-    label: 'LinkedIn',
     href: 'https://linkedin.com/',
     icon: `<svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>`,
   },
   {
-    label: 'X',
-    href: 'https://twitter.com/',
-    icon: `<svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
-  },
-  {
     label: 'Instagram',
-    href: 'https://instagram.com/',
+    href: 'https://instagram.com/coded_by_ajmal',
     icon: `<svg viewBox="0 0 24 24" fill="none" width="17" height="17"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>`,
   },
   {
@@ -266,17 +270,34 @@ const socials = [
   },
 ]
 
-function sendMessage() {
-  const subject = encodeURIComponent(`Project inquiry: ${form.type}`)
-  const body = encodeURIComponent(
-    `Name: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone || 'Not provided'}\nProject type: ${form.type}\n\n${form.message}`,
-  )
+async function handleSubmit() {
+  loading.value = true
+  successMessage.value = ''
+  errorMessage.value = ''
 
-  window.location.href = `mailto:${emailAddress}?subject=${subject}&body=${body}`
+  try {
+    const response = await fetch(`${ import.meta.env.VITE_APP_API_URL }/api/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    })
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Something went wrong while sending the message.');
+    }
+
+    successMessage.value = 'Message sent successfully!'
+    Object.assign(form, initialForm())
+  } catch (err) {
+    errorMessage.value = err instanceof Error ? err.message : 'An error occurred while sending the message. Please try again later.'
+  } finally {
+    loading.value = false
+  }
 }
 
 function chooseType(type: string) {
-  form.type = type
+  form.projectType = type
   selectOpen.value = false
 }
 </script>
